@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videojuegos Favoritos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#120821;
+    --panel:#1D0F36;
+    --panel-light:#2A1650;
+    --cyan:#4CF3FF;
+    --magenta:#FF3EA5;
+    --yellow:#FFD23F;
+    --text:#EDE6F5;
+    --muted:#B6A9D6;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(76,243,255,0.08), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(255,62,165,0.10), transparent 45%);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.55;
+  }
+
+  .pixel{ font-family:'Press Start 2P', monospace; }
+
+  /* ---------- TOPBAR (arcade score) ---------- */
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1rem 2rem;
+    border-bottom:2px solid var(--panel-light);
+    flex-wrap:wrap;
+    gap:0.8rem;
+  }
+
+  .topbar .brand{
+    font-size:0.85rem;
+    color:var(--cyan);
+    letter-spacing:0.05em;
+  }
+
+  .score{
+    display:flex;
+    gap:2rem;
+    font-size:0.7rem;
+    color:var(--yellow);
+  }
+
+  .score span{ color:var(--muted); font-family:'Space Grotesk',sans-serif; font-size:0.75rem; margin-right:0.4rem; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    text-align:center;
+    padding:5rem 1.5rem 4rem;
+  }
+
+  .hero .eyebrow{
+    font-size:0.6rem;
+    color:var(--magenta);
+    letter-spacing:0.15em;
+    display:block;
+    margin-bottom:1.4rem;
+  }
+
+  .hero h1{
+    font-size:clamp(1.4rem, 4.2vw, 2.6rem);
+    line-height:1.6;
+    color:var(--text);
+    text-shadow: 3px 3px 0 rgba(255,62,165,0.35);
+    max-width:800px;
+    margin:0 auto;
+  }
+
+  .hero h1 .hl{ color:var(--cyan); }
+
+  .hero p.sub{
+    margin-top:1.6rem;
+    color:var(--muted);
+    max-width:520px;
+    margin-left:auto;
+    margin-right:auto;
+    font-size:0.95rem;
+  }
+
+  /* ---------- GRID DE CARTUCHOS ---------- */
+  .grid{
+    max-width:1180px;
+    margin:0 auto;
+    padding:1rem 2rem 6rem;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:2.2rem;
+  }
+
+  .cart{
+    background:var(--panel);
+    border:2px solid var(--panel-light);
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .cart:hover{
+    transform: translateY(-6px);
+    border-color:var(--cyan);
+  }
+
+  .cart .label{
+    position:absolute;
+    top:0.8rem;
+    left:0.8rem;
+    background:var(--bg);
+    border:1px solid var(--magenta);
+    color:var(--magenta);
+    font-size:0.6rem;
+    padding:0.3rem 0.5rem;
+    border-radius:4px;
+    z-index:2;
+    letter-spacing:0.05em;
+  }
+
+  .cart .portada{
+    aspect-ratio: 16/10;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .cart .portada img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    filter:saturate(1.05);
+    transition: transform 0.5s ease;
+  }
+
+  .cart:hover .portada img{ transform:scale(1.08); }
+
+  .cart .portada::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.15) 0px,
+      rgba(0,0,0,0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity:0;
+    transition: opacity 0.25s ease;
+  }
+
+  .cart:hover .portada::after{ opacity:1; }
+
+  .cart .info{
+    padding:1.3rem 1.3rem 1.6rem;
+  }
+
+  .cart h2{
+    font-size:1.15rem;
+    color:var(--text);
+    margin-bottom:0.7rem;
+  }
+
+  .cart .genero{
+    display:inline-block;
+    font-size:0.62rem;
+    color:var(--bg);
+    background:var(--yellow);
+    padding:0.25rem 0.55rem;
+    border-radius:4px;
+    margin-bottom:0.9rem;
+    letter-spacing:0.03em;
+  }
+
+  .cart p.resumen{
+    font-size:0.88rem;
+    color:var(--muted);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:2.5rem 1.5rem 3rem;
+    border-top:2px solid var(--panel-light);
+    color:var(--muted);
+    font-size:0.62rem;
+  }
+
+  footer .pixel{ color:var(--cyan); display:block; margin-bottom:0.6rem; font-size:0.7rem; }
+
+  @media (max-width:600px){
+    .score{ gap:1rem; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand pixel">GAME LIBRARY</div>
+  <div class="score pixel">
+    <div><span>TOP</span>005</div>
+    <div><span>1UP</span>angel</div>
+  </div>
+</div>
+
+<section class="hero">
+  <span class="eyebrow pixel">PRESS START</span>
+  <h1 class="pixel">Mis <span class="hl">5 videojuegos</span> favoritos de todos los tiempos</h1>
+  <p class="sub">De atracos en Los Santos a construir mundos en bloques: cinco juegos que definieron horas de partidas, con su portada y una breve sinopsis de cada uno.</p>
+</section>
+
+<main class="grid">
+
+  <article class="cart">
+    <span class="label pixel">01</span>
+    <div class="portada">
+      <img src="https://picsum.photos/seed/gta-5-game/700/440" alt="Portada de Grand Theft Auto V">
+    </div>
+    <div class="info">
+      <h2>Grand Theft Auto V</h2>
+      <span class="genero">Acción / Mundo abierto</span>
+      <p class="resumen">Tres protagonistas con vidas cruzadas, Michael, Franklin y Trevor, se mueven por la ciudad ficticia de Los Santos entre atracos, persecuciones y negocios turbios. Su mundo abierto masivo, su modo online y la posibilidad de cambiar entre los tres personajes en cualquier momento lo convirtieron en uno de los juegos más vendidos de la historia.</p>
+    </div>
+  </article>
+
+  <article class="cart">
+    <span class="label pixel">02</span>
+    <div class="portada">
+      <img src="https://picsum.photos/seed/brawl-stars-game/700/440" alt="Portada de Brawl Stars">
+    </div>
+    <div class="info">
+      <h2>Brawl Stars</h2>
+      <span class="genero">Battle royale / Multijugador móvil</span>
+      <p class="resumen">Partidas rápidas de pocos minutos donde equipos de "brawlers" con habilidades únicas compiten en distintos modos: extracción de gemas, control de zonas o el clásico todos contra todos. Su formato ágil y pensado para móviles lo hizo especialmente popular para partidas cortas entre amigos.</p>
+    </div>
+  </article>
+
+  <article class="cart">
+    <span class="label pixel">03</span>
+    <div class="portada">
+      <img src="https://picsum.photos/seed/fifa-game/700/440" alt="Portada de FIFA">
+    </div>
+    <div class="info">
+      <h2>FIFA</h2>
+      <span class="genero">Deportes / Simulación de fútbol</span>
+      <p class="resumen">La saga futbolística más jugada del mundo, con licencias oficiales de ligas, equipos y jugadores reales. Entre modos como carrera de jugador, gestión de clubes y el popular Ultimate Team, se volvió una cita anual obligada para millones de aficionados al fútbol.</p>
+    </div>
+  </article>
+
+  <article class="cart">
+    <span class="label pixel">04</span>
+    <div class="portada">
+      <img src="https://picsum.photos/seed/god-of-war-2018/700/440" alt="Portada de God of War (2018)">
+    </div>
+    <div class="info">
+      <h2>God of War (2018)</h2>
+      <span class="genero">Acción / Aventura</span>
+      <p class="resumen">Kratos, ahora instalado en la mitología nórdica, viaja junto a su hijo Atreus para esparcir las cenizas de su esposa en la cima más alta de los nueve reinos. La historia reinventó al personaje como padre y guerrero, con un combate visceral y una cámara continua que convierte todo el juego en un plano único.</p>
+    </div>
+  </article>
+
+  <article class="cart">
+    <span class="label pixel">05</span>
+    <div class="portada">
+      <img src="https://picsum.photos/seed/minecraft-game/700/440" alt="Portada de Minecraft">
+    </div>
+    <div class="info">
+      <h2>Minecraft</h2>
+      <span class="genero">Sandbox / Supervivencia</span>
+      <p class="resumen">En un mundo generado por bloques, el jugador reúne recursos, construye estructuras y sobrevive a criaturas nocturnas, sin una historia lineal que seguir. Su libertad casi total de construcción lo convirtió en uno de los videojuegos más vendidos e influyentes de la historia.</p>
+    </div>
+  </article>
+
+</main>
+
+<footer>
+  <span class="pixel">GAME OVER</span>
+  Videojuegos Favoritos · Proyecto de práctica
+</footer>
+
+</body>
+</html>
